@@ -1,32 +1,32 @@
 [{
 	"name": "bigNumber",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/bigNumber.js"
 },
 {
 	"name": "common",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/common.js"
 },
 {
 	"name": "entry",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/enty.js"
 },
 {
 	"name": "map",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/map.js"
 },
 {
 	"name": "math",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/math.js"
 },
 {
 	"name": "check",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/check.js"
 },
 {
 	"name": "kfc20",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/kfc20.js"
 },
 {
 	"name": "insc",
-	"path": ""
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/insc.js"
 }]
