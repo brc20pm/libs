@@ -3,16 +3,16 @@
 	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/bigNumber.js"
 },
 {
-	"name": "common",
-	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/common.js"
-},
-{
 	"name": "entry",
 	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/enty.js"
 },
 {
 	"name": "map",
 	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/map.js"
+},
+{
+	"name": "common",
+	"path": "https://raw.githubusercontent.com/Fapiao-BTC/Fp-libs/main/libs/common.js"
 },
 {
 	"name": "math",
