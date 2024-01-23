@@ -329,7 +329,7 @@ function callIndexState() {
 			"function" == pType && (_originalFunc.length == _callList.length ? call[item] = _originalFunc[index]
 				[item] : (str = (func = call[item]).toString(), str = /{\s*([\s\S]*?)?.*}/g.exec(str),
 					func = extractParameters(func), str = str[0], call[item] = "function(" + func
-				.toString() + ")" + str)), "object" == pType && (call[item] = func2Str(call[item], item,
+					.toString() + ")" + str)), "object" == pType && (call[item] = func2Str(call[item], item,
 				index))
 		}), _callList[index].values = call, callArry.push(_callList[index])
 	}
@@ -350,7 +350,7 @@ function isKeyword(field) {
 		"for", "function", "if", "in", "instanceof", "import", "let", "new", "return", "super", "switch", "this",
 		"throw", "try", "typeof", "var", "void", "while", "with", "yield", "event", "randomInt", "randomFloat",
 		"deploy", "md5e", "sha256e", "keccak256", "base64e", "base64d", "NewContract", "require", "constructor",
-		"init", "tag"
+		"init", "tag", "_NewContract"
 	].includes(field)
 }
 
