@@ -56,6 +56,7 @@ function checkContract(contract) {
 				if (funcName == "constructor" || funcName.startsWith("_")) {
 					return
 				}
+				
 				if (!isKeyword(funcName)) {
 					ABI.push({
 						name: funcName,
