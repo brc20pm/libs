@@ -41,7 +41,14 @@ function checkContract(contract) {
 	})
 
 	function get_o_abi(prototype) {
+		const descriptors = Object.getOwnPropertyDescriptors(prototype);
 		Object.getOwnPropertyNames(prototype).forEach(funcName => {
+			
+			//检测是否存在异步函数
+			if (funcName !== 'constructor' && descriptors[funcName].value.toString().includes('async')) {
+				throw new Error('disable async function')
+			}
+			
 			if (typeof prototype[funcName] === 'function') {
 				let func = prototype[funcName];
 				let params = extractParameters(func);
