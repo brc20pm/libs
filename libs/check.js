@@ -46,7 +46,7 @@ function checkContract(contract) {
 			let ds = descriptors[funcName];
 			//检测是否存在异步函数
 			if(ds){
-				if (funcName !== 'constructor' && ds[funcName].value.toString().includes('async')) {
+				if (funcName !== 'constructor' && ds.value.toString().includes('async')) {
 					throw new Error('disable async function')
 				}
 			}
