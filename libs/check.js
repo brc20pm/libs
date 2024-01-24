@@ -43,16 +43,15 @@ function checkContract(contract) {
 	function get_o_abi(prototype) {
 		const descriptors = Object.getOwnPropertyDescriptors(prototype);
 		Object.getOwnPropertyNames(prototype).forEach(funcName => {
-			let ds = descriptors[funcName];
+			let dsv = descriptors[funcName].value;
 			//检测是否存在异步函数
-			if(ds){
-				throw new Error(ds.value)
-				if (funcName !== 'constructor' && ds.value.toString().includes('async')) {
+			if (dsv) {
+				if (funcName != 'constructor' && dsv.toString().includes('async')) {
 					throw new Error('disable async function')
 				}
 			}
-			
-			
+
+
 			if (typeof prototype[funcName] === 'function') {
 				let func = prototype[funcName];
 				let params = extractParameters(func);
@@ -60,7 +59,7 @@ function checkContract(contract) {
 				if (funcName == "constructor" || funcName.startsWith("_")) {
 					return
 				}
-				
+
 				if (!isKeyword(funcName)) {
 					ABI.push({
 						name: funcName,
