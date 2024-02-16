@@ -1,3 +1,4 @@
+
 var EVMCaller = {
 	call: function(rpcUrl, abi, contract, method, args = []) {
 		try {

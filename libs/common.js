@@ -1,5 +1,4 @@
 var Date = null;
-
 let _callList = [],
 	_originalFunc = [],
 	_NewContract = function(address, cScript) {
@@ -118,8 +117,12 @@ let _callList = [],
 				try {
 					var contract = _callList[exist ? callIndex : _callList.length - 1].values;
 					if ("init" === method && contract.initLock) throw new Error("init is locked...");
-					let result = contract[method](...args);
-					return result
+					let result = contract[method](...args),
+						rType = typeof result;
+					return "function" === rType ? result = "function" : "object" === rType && result && Object.keys(
+						result).forEach(key => {
+						"function" == typeof result[key] && (result[key] = "function")
+					}), result
 				} catch (e) {
 					throw e
 				}
@@ -242,8 +245,12 @@ function NewContract(address) {
 			try {
 				var contract = _callList[exist ? callIndex : _callList.length - 1].values;
 				if ("init" === method && contract.initLock) throw new Error("init is locked...");
-				let result = contract[method](...args);
-				return result
+				let result = contract[method](...args),
+					rType = typeof result;
+				return "function" === rType ? result = "function" : "object" === rType && result && Object.keys(
+					result).forEach(key => {
+					"function" == typeof result[key] && (result[key] = "function")
+				}), result
 			} catch (e) {
 				throw e
 			}
@@ -251,7 +258,6 @@ function NewContract(address) {
 	};
 	return callObj
 }
-
 var callLock = !1;
 
 function call(method, args) {
