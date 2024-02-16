@@ -8,7 +8,7 @@ var EVMCaller = {
 			const decodedData = interface.decodeFunctionResult(method, encodedData);
 			return decodedData.toString()
 		} catch (e) {
-			throw e;
+			throw new Error(e);
 		}
 	}
 }
