@@ -2,12 +2,12 @@
 function EVMCaller() {
 	let _etherJs = ethers;
 	return {
-		call: function(rpcUrl, abi, contract, method, args = []) {
+		call: function(msg) {
 			try {
-				const interface = new _etherJs.utils.Interface(abi);
-				const data = interface.encodeFunctionData(method, args);
-				const encodedData = EVM_CALL(rpcUrl, contract, data);
-				const decodedData = interface.decodeFunctionResult(method, encodedData);
+				const interface = new _etherJs.utils.Interface(msg.abi);
+				const data = interface.encodeFunctionData(msg.method, msg.args);
+				const encodedData = EVM_CALL(msg.rpcUrl, msg.contract,data);
+				const decodedData = interface.decodeFunctionResult(msg.method, encodedData);
 				return decodedData.toString()
 			} catch (e) {
 				throw new Error(e);
@@ -16,4 +16,5 @@ function EVMCaller() {
 	}
 }
 
+//禁用ethers库
 var ethers = null;
