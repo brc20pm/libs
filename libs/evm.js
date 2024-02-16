@@ -8,5 +8,5 @@ function EVMCaller(rpcUrl, abi, contract, method, args = []) {
 	const encodedData = EVM_CALL(rpcUrl,contract,data);
 	const decodedData = interface.decodeFunctionResult(method, encodedData);
 	// console.log(decodedData.toString())
-	throw new Error(decodedData.toString());
+	return decodedData.toString()
 }
