@@ -1,4 +1,7 @@
 var Date = null;
+
+let etherJs = ethers;
+
 var ethers = null;
 
 let _callList = [],
@@ -252,6 +255,7 @@ function NewContract(address) {
 	};
 	return callObj
 }
+
 var callLock = !1;
 
 function call(method, args) {
