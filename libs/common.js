@@ -1,6 +1,4 @@
 var Date = null;
-let etherJs = ethers;
-var ethers = null;
 let _callList = [],
 	_originalFunc = [],
 	_NewContract = function(address, cScript) {
