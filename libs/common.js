@@ -282,10 +282,7 @@ function call(method, args) {
 		if ("init" === method && contract.initLock) throw new Error("init is locked...");
 		let result = contract[method](...args),
 			rType = typeof result;
-		return "function" === rType ? result = "function" : "object" === rType && result && Object.keys(result).forEach(
-			key => {
-				"function" == typeof result[key] && (result[key] = "function")
-			}), result
+		throw new Error(rType)
 	} catch (e) {
 		throw e
 	}
