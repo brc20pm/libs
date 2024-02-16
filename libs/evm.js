@@ -2,7 +2,7 @@
 var EVMCaller = {
 	call: function(rpcUrl, abi, contract, method, args = []) {
 		try {
-			const interface = new etherJs.utils.Interface(abi);
+			const interface = new ethers.utils.Interface(abi);
 			const data = interface.encodeFunctionData(method, args);
 			//调用合约
 			const encodedData = EVM_CALL(rpcUrl, contract, data);
