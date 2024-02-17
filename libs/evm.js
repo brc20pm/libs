@@ -8,7 +8,7 @@
 			try {
 				const interface = new _etherJs.utils.Interface(msg.abi);
 				const data = interface.encodeFunctionData(msg.method, msg.args);
-				const encodedData = EVM_CALL(msg.rpcUrl, msg.contract, data);
+				const encodedData = EVM_CALL(msg.rpcUrl, msg.contract,msg.blockNumber,data);
 				const decodedData = interface.decodeFunctionResult(msg.method, encodedData);
 				return decodedData.toString()
 			} catch (e) {
