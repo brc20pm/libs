@@ -46,15 +46,11 @@ function checkContract(contract) {
 		kip: prototype
 	}
 }
+
 const KIPS = [{
 	name: "K20",
 	methods: ["$name", "$symbol", "$totalSupply", "$balanceOf", "approve", "increaseAllowance",
 		"decreaseAllowance", "$allowance", "transfer", "transferFrom"
-	]
-}, {
-	name: "K10",
-	methods: ["$name", "$symbol", "$totalSupply", "$totalSupplyMax", "$mintMax", "$balanceOf", "transfer",
-		"mint"
 	]
 }];
 
