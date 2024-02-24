@@ -61,7 +61,7 @@ let _callList = [],
 					protoKeys(pTypeOf), _originalFunc.push(_keys)
 				}
 				Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj
-					.txHash = txHash, Obj.event = function(data) {
+					.txHash = txHash, Obj.memo = memo, Obj.event = function(data) {
 						if ("object" != typeof data || null === data) throw new Error("event is not object");
 						if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
 						null != this.events && null != this.events || (this.events = []), this.events.push(data)
@@ -82,7 +82,7 @@ let _callList = [],
 								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
+					}, ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
 						"randomFloat", "event", "deploy"
 					]);
 				writableNames.forEach(name => {
@@ -188,7 +188,7 @@ function NewContract(address) {
 				protoKeys(pTypeOf), _originalFunc.push(_keys)
 			}
 			Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash =
-				txHash, Obj.event = function(data) {
+				txHash, Obj.memo = memo, Obj.event = function(data) {
 					if ("object" != typeof data || null === data) throw new Error("event is not object");
 					if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
 					null != this.events && null != this.events || (this.events = []), this.events.push(data)
@@ -209,8 +209,8 @@ function NewContract(address) {
 								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt", "randomFloat",
-						"event", "deploy"
+					}, ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
+						"randomFloat", "event", "deploy"
 					]);
 			writableNames.forEach(name => {
 				Object.defineProperty(Obj, name, {
