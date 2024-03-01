@@ -61,7 +61,7 @@ let _callList = [],
 					protoKeys(pTypeOf), _originalFunc.push(_keys)
 				}
 				Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj
-					.txHash = txHash, Obj.memo = memo, Obj.event = function(data) {
+					.txHash = txHash, Obj.out = out, Obj.event = function(data) {
 						if ("object" != typeof data || null === data) throw new Error("event is not object");
 						if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
 						null != this.events && null != this.events || (this.events = []), this.events.push(data)
@@ -82,7 +82,7 @@ let _callList = [],
 								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
+					}, ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
 						"randomFloat", "event", "deploy"
 					]);
 				writableNames.forEach(name => {
@@ -129,7 +129,8 @@ let _callList = [],
 		return callObj
 	};
 
-function NewContract(address) {
+function Caller(address) {
+	if (!address) throw new Error("invalid address");
 	let Obj = null,
 		exist = !1,
 		callIndex = null;
@@ -188,7 +189,7 @@ function NewContract(address) {
 				protoKeys(pTypeOf), _originalFunc.push(_keys)
 			}
 			Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash =
-				txHash, Obj.memo = memo, Obj.event = function(data) {
+				txHash, Obj.out = out, Obj.event = function(data) {
 					if ("object" != typeof data || null === data) throw new Error("event is not object");
 					if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
 					null != this.events && null != this.events || (this.events = []), this.events.push(data)
@@ -209,7 +210,7 @@ function NewContract(address) {
 								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
+					}, ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
 						"randomFloat", "event", "deploy"
 					]);
 			writableNames.forEach(name => {
