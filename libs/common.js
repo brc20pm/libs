@@ -1,17 +1,15 @@
 var Date = null;
 let _callList = [],
 	_originalFunc = [],
-	_NewContract = function(address, cScript) {
+	_callMap = {},
+	_Caller = function(address, cScript, msgSender) {
+		if (!address) throw new Error("invalid address");
 		let Obj = null,
 			exist = !1,
 			callIndex = null;
 		try {
-			for (var i = 0; i < _callList.length; i++)
-				if (_callList[i].addr === address) {
-					exist = !0, Obj = _callList[i].values, callIndex = i;
-					break
-				} if (!exist) {
-				if (Obj = loadContract(address, cScript), Obj.initLock) {
+			if (_callMap[address] && (exist = !0, Obj = _callMap[address]), !exist) {
+				if (Obj = cScript ? loadContract(address, cScript) : loadContract(address), Obj.initLock) {
 					let _keys = {},
 						pTypeOf = (Obj && Object.keys(Obj).forEach(item => {
 							function genKeys(obj, name) {
@@ -60,15 +58,13 @@ let _callList = [],
 					}
 					protoKeys(pTypeOf), _originalFunc.push(_keys)
 				}
-				Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj
-					.txHash = txHash, Obj.out = out, Obj.event = function(data) {
+				Obj.Caller = caller, Obj.address = address, Obj.height = height, Obj.msgSender = msgSender, Obj
+					.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash = txHash, Obj.out = out, Obj.event =
+					function(data) {
 						if ("object" != typeof data || null === data) throw new Error("event is not object");
 						if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
 						null != this.events && null != this.events || (this.events = []), this.events.push(data)
-					};
-				let callLen = _callList.length,
-					writableNames = (0 == _callList.length ? Obj.msgSender = sender : Obj.msgSender = _callList[
-						callLen - 1].addr, Obj.randomInt = function(min, max) {
+					}, Obj.randomInt = function(min, max) {
 						let nStr = "0";
 						var mNumbers = Obj.msgSender.match(/\d+/g),
 							mNumbers = (3 <= mNumbers.length ? nStr = mNumbers[0] + mNumbers[1] + mNumbers[2] : 0 <
@@ -82,14 +78,15 @@ let _callList = [],
 								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
-						"randomFloat", "event", "deploy"
-					]);
+					};
+				let writableNames = ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash",
+					"randomInt", "randomFloat", "event", "deploy"
+				];
 				writableNames.forEach(name => {
 					Object.defineProperty(Obj, name, {
 						writable: !1
 					})
-				}), _callList.push({
+				}), _callMap[address] = Obj, _callList.push({
 					addr: address,
 					values: Obj
 				})
@@ -128,141 +125,14 @@ let _callList = [],
 		};
 		return callObj
 	};
-
-function Caller(address) {
-	if (!address) throw new Error("invalid address");
-	let Obj = null,
-		exist = !1,
-		callIndex = null;
-	try {
-		for (var i = 0; i < _callList.length; i++)
-			if (_callList[i].addr === address) {
-				exist = !0, Obj = _callList[i].values, callIndex = i;
-				break
-			} if (!exist) {
-			if (Obj = loadContract(address), Obj.initLock) {
-				let _keys = {},
-					pTypeOf = (Obj && Object.keys(Obj).forEach(item => {
-						function genKeys(obj, name) {
-							if ("object" == typeof obj && obj)
-								if (obj.tag) {
-									let tagObj = getTagObject(obj.tag);
-									Object.keys(obj).forEach(k => {
-										tagObj[k] = obj[k]
-									}), obj = tagObj
-								} else Object.keys(obj).forEach($ => {
-									"object" == typeof obj[$] && (obj[$] = genKeys(obj[$], $)),
-										"string" == typeof obj[$] && isFuncStr(obj[$]) && (_keys[name +
-											"." + $] = obj[$], eval("obj." + $ + " = " + obj[$]))
-								});
-							return obj
-						}
-						Obj[item] = genKeys(Obj[item], item)
-					}), Object.getPrototypeOf(Obj));
-
-				function protoKeys(prototype) {
-					Object.getOwnPropertyNames(prototype).forEach(item => {
-						let obj = prototype[item];
-
-						function genKeys(obj, name) {
-							if ("object" == typeof obj) {
-								if (obj)
-									if (obj.tag) {
-										let tagObj = getTagObject(obj.tag);
-										Object.keys(obj).forEach(k => {
-											tagObj[k] = obj[k]
-										}), obj = tagObj
-									} else Object.keys(obj).forEach($ => {
-										"object" == typeof obj[$] && (obj[$] = genKeys(obj[$], $)),
-											"string" == typeof obj[$] && isFuncStr(obj[$]) && (_keys[
-												name + "." + $] = obj[$], eval("obj." + $ + " = " +
-												obj[$]))
-									});
-								return obj
-							}
-						}
-						obj = genKeys(obj, item);
-						const nextPrototype = Object.getPrototypeOf(prototype);
-						null !== nextPrototype && protoKeys(nextPrototype)
-					})
-				}
-				protoKeys(pTypeOf), _originalFunc.push(_keys)
-			}
-			Obj.address = address, Obj.height = height, Obj.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash =
-				txHash, Obj.out = out, Obj.event = function(data) {
-					if ("object" != typeof data || null === data) throw new Error("event is not object");
-					if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
-					null != this.events && null != this.events || (this.events = []), this.events.push(data)
-				};
-			let callLen = _callList.length,
-				writableNames = (0 == _callList.length ? Obj.msgSender = sender : Obj.msgSender = _callList[callLen - 1]
-					.addr, Obj.randomInt = function(min, max) {
-						let nStr = "0";
-						var mNumbers = Obj.msgSender.match(/\d+/g),
-							mNumbers = (3 <= mNumbers.length ? nStr = mNumbers[0] + mNumbers[1] + mNumbers[2] : 0 <
-								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
-							timeStamp = Number(Obj.timeStamp);
-						return random(timeStamp + mNumbers, min, max, !1)
-					}, Obj.randomFloat = function(min, max) {
-						let nStr = "0";
-						var mNumbers = Obj.msgSender.match(/\d+/g),
-							mNumbers = (3 <= mNumbers.length ? nStr = mNumbers[0] + mNumbers[1] + mNumbers[2] : 0 <
-								mNumbers.length && (nStr = mNumbers[0]), Number(nStr)),
-							timeStamp = Number(Obj.timeStamp);
-						return random(timeStamp + mNumbers, min, max, !0)
-					}, ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash", "randomInt",
-						"randomFloat", "event", "deploy"
-					]);
-			writableNames.forEach(name => {
-				Object.defineProperty(Obj, name, {
-					writable: !1
-				})
-			}), _callList.push({
-				addr: address,
-				values: Obj
-			})
-		}
-	} catch (e) {
-		throw e
-	}
-	const callObj = {
-		call(method, ...args) {
-			function checkParams(...args) {
-				if (Array.isArray(args)) args.forEach(item => {
-					if (isFuncStr(item)) {
-						let eScript = "this['_func']=" + item;
-						if ("function" == typeof eval(eScript)) throw new Error(
-							"params cant not is func.toString()")
-					}
-				});
-				else if (isFuncStr(args)) {
-					let eScript = "this['_func']=" + args;
-					if ("function" == typeof eval(eScript)) throw new Error("params cant not is func.toString()")
-				}
-			}
-			if (checkParams(args), "_" === method[0]) throw new Error("inaccessible private attribute", method);
-			try {
-				var contract = _callList[exist ? callIndex : _callList.length - 1].values;
-				if ("init" === method && contract.initLock) throw new Error("init is locked...");
-				let result = contract[method](...args),
-					rType = typeof result;
-				return "function" === rType ? result = "function" : "object" === rType && (result = JSON.stringify(
-					result)), result
-			} catch (e) {
-				throw e
-			}
-		}
-	};
-	return callObj
-}
 var callLock = !1;
-
-function call(method, args) {
+let _call = function(kid, method, args) {
 	function checkParams(...args) {
 		if (Array.isArray(args)) args.forEach(item => {
 			if (isFuncStr(item)) {
 				let eScript = "this['_func']=" + item;
-				if ("function" == typeof eval(eScript)) throw new Error("params cant not is func.toString()")
+				if ("function" == typeof eval(eScript)) throw new Error(
+					"params cant not is func.toString()")
 			}
 		});
 		else if (isFuncStr(args)) {
@@ -275,7 +145,7 @@ function call(method, args) {
 	callLock = !0;
 	try {
 		disableFunc();
-		let contract = _callList[0].values;
+		let contract = _callMap[kid];
 		if ("init" === method && contract.initLock) throw new Error("init is locked...");
 		let result = contract[method](...args),
 			rType = typeof result;
@@ -284,7 +154,7 @@ function call(method, args) {
 	} catch (e) {
 		throw e
 	}
-}
+};
 
 function isFuncStr(str) {
 	return /^\s*function\s?\w?\([^)]*\)\s*{[\s\S]*}$/i.test(str)
@@ -294,7 +164,7 @@ function callIndexState() {
 	var callArry = [];
 	for (let index = 0; index < _callList.length; index++) {
 		let call = _callList[index].values;
-		delete call.deploy, call && Object.keys(call).forEach(item => {
+		call && Object.keys(call).forEach(item => {
 			var func, str, pType = typeof call[item];
 
 			function func2Str(obj, objName, index) {
