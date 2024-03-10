@@ -8,7 +8,15 @@ let _callList = [],
 			exist = !1,
 			callIndex = null;
 		try {
-			if (_callMap[address] && (exist = !0, Obj = _callMap[address]), !exist) {
+			if (_callMap[address]) {
+				exist = !0, Obj = _callMap[address];
+				for (var i = 0; i < _callList.length; i++)
+					if (_callList[i].addr === address) {
+						callIndex = i;
+						break
+					}
+			}
+			if (!exist) {
 				if (Obj = cScript ? loadContract(address, cScript) : loadContract(address), Obj.initLock) {
 					let _keys = {},
 						pTypeOf = (Obj && Object.keys(Obj).forEach(item => {
@@ -124,41 +132,40 @@ let _callList = [],
 			}
 		};
 		return callObj
-	};
-var callLock = !1;
-let _call = function(kid, method, args) {
-	function checkParams(...args) {
-		if (Array.isArray(args)) args.forEach(item => {
-			if (isFuncStr(item)) {
-				let eScript = "this['_func']=" + item;
-				if ("function" == typeof eval(eScript)) throw new Error(
-					"params cant not is func.toString()")
+	},
+	callLock = !1,
+	_call = function(kid, method, args) {
+		function checkParams(...args) {
+			if (Array.isArray(args)) args.forEach(item => {
+				if (isFuncStr(item)) {
+					let eScript = "this['_func']=" + item;
+					if ("function" == typeof eval(eScript)) throw new Error(
+						"params cant not is func.toString()")
+				}
+			});
+			else if (isFuncStr(args)) {
+				let eScript = "this['_func']=" + args;
+				if ("function" == typeof eval(eScript)) throw new Error("params cant not is func.toString()")
 			}
-		});
-		else if (isFuncStr(args)) {
-			let eScript = "this['_func']=" + args;
-			if ("function" == typeof eval(eScript)) throw new Error("params cant not is func.toString()")
 		}
-	}
-	if (checkParams(args), "_" === method[0]) throw new Error("inaccessible private attribute", method);
-	if (1 == callLock) throw new Error("call is locked...");
-	callLock = !0;
-	try {
-		disableFunc();
-		let contract = _callMap[kid];
-		if ("init" === method && contract.initLock) throw new Error("init is locked...");
-		let result = contract[method](...args),
-			rType = typeof result;
-		return "function" === rType ? result = "function" : "object" === rType && (result = JSON.stringify(result)),
-			result
-	} catch (e) {
-		throw e
-	}
-};
-
-function isFuncStr(str) {
-	return /^\s*function\s?\w?\([^)]*\)\s*{[\s\S]*}$/i.test(str)
-}
+		if (checkParams(args), "_" === method[0]) throw new Error("inaccessible private attribute", method);
+		if (1 == callLock) throw new Error("call is locked...");
+		callLock = !0;
+		try {
+			disableFunc();
+			let contract = _callMap[kid];
+			if ("init" === method && contract.initLock) throw new Error("init is locked...");
+			let result = contract[method](...args),
+				rType = typeof result;
+			return "function" === rType ? result = "function" : "object" === rType && (result = JSON.stringify(result)),
+				result
+		} catch (e) {
+			throw e
+		}
+	},
+	isFuncStr = function(str) {
+		return /^\s*function\s?\w?\([^)]*\)\s*{[\s\S]*}$/i.test(str)
+	};
 
 function callIndexState() {
 	var callArry = [];
@@ -172,26 +179,26 @@ function callIndexState() {
 					if (obj.tag) return obj;
 					Object.keys(obj).forEach(cItem => {
 						var t, str;
-						isKeyword(cItem) || ("object" == typeof obj[cItem] && (obj[cItem] = func2Str(
-								obj[cItem], cItem, index)), "function" == (t = typeof obj[cItem]) &&
-							"constructor" != t && (_originalFunc.length == _callList.length ? obj[
-								cItem] = _originalFunc[index][objName + "." + cItem] : (str = (
-									t = obj[cItem]).toString(), str = /{\s*([\s\S]*?)?.*}/g
+						isKeyword_common(cItem) || ("object" == typeof obj[cItem] && (obj[cItem] =
+							func2Str(obj[cItem], cItem, index)), "function" == (t = typeof obj[
+							cItem]) && "constructor" != t && (_originalFunc.length == _callList
+							.length ? obj[cItem] = _originalFunc[index][objName + "." + cItem] :
+							(str = (t = obj[cItem]).toString(), str = /{\s*([\s\S]*?)?.*}/g
 								.exec(str), t = extractParameters(t), str = str[0], obj[cItem] =
 								"function(" + t.toString() + ")" + str)))
 					}), ! function pFunc(prototype) {
 						Object.getOwnPropertyNames(prototype).forEach(funcName => {
 							var func, str;
-							isKeyword(funcName) || ("object" == typeof prototype[funcName] && (
-								prototype[funcName] = func2Str(prototype[funcName],
-									funcName, index)), "function" == typeof prototype[
-								funcName] && "constructor" != funcName && (_originalFunc
-								.length == _callList.length ? obj[funcName] = _originalFunc[
-									index][objName + "." + funcName] : (str = (func =
-										prototype[funcName]).toString(), str =
-									/{\s*([\s\S]*?)?.*}/g.exec(str), func =
-									extractParameters(func), str = str[0], obj[funcName] =
-									"function(" + func.toString() + ")" + str)))
+							isKeyword_common(funcName) || ("object" == typeof prototype[funcName] &&
+								(prototype[funcName] = func2Str(prototype[funcName], funcName,
+									index)), "function" == typeof prototype[funcName] &&
+								"constructor" != funcName && (_originalFunc.length == _callList
+									.length ? obj[funcName] = _originalFunc[index][objName +
+										"." + funcName
+									] : (str = (func = prototype[funcName]).toString(), str =
+										/{\s*([\s\S]*?)?.*}/g.exec(str), func =
+										extractParameters(func), str = str[0], obj[funcName] =
+										"function(" + func.toString() + ")" + str)))
 						});
 						var nextPrototype = Object.getPrototypeOf(prototype);
 						null !== nextPrototype && pFunc(nextPrototype)
@@ -216,7 +223,7 @@ function extractParameters(func) {
 	return func.slice(start, end).split(",").map(param => param.trim()).filter(param => "" !== param)
 }
 
-function isKeyword(field) {
+function isKeyword_common(field) {
 	return ["__defineGetter__", "__defineSetter__", "__lookupGetter__", "__lookupSetter__", "hasOwnProperty",
 		"isPrototypeOf", "propertyIsEnumerable", "toLocaleString", "toString", "valueOf", "break", "case", "catch",
 		"class", "const", "continue", "debugger", "default", "delete", "do", "else", "export", "extends", "finally",
