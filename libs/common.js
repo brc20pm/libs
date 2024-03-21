@@ -67,7 +67,7 @@ let _callList = [],
 					protoKeys(pTypeOf), _originalFunc.push(_keys)
 				}
 				Obj.Caller = caller, Obj.address = address, Obj.height = height, Obj.msgSender = msgSender, Obj
-					.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash = txHash, Obj.out = out, Obj.event =
+					.txOrigin = sender, Obj.timeStamp = timeStamp, Obj.txHash = txHash, Obj.memo = memo, Obj.event =
 					function(data) {
 						if ("object" != typeof data || null === data) throw new Error("event is not object");
 						if (!isFirstKey(data, "name")) throw new Error("event firstKey is not name");
@@ -87,7 +87,7 @@ let _callList = [],
 							timeStamp = Number(Obj.timeStamp);
 						return random(timeStamp + mNumbers, min, max, !0)
 					};
-				let writableNames = ["out", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash",
+				let writableNames = ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash",
 					"randomInt", "randomFloat", "event", "deploy"
 				];
 				writableNames.forEach(name => {
@@ -120,7 +120,7 @@ let _callList = [],
 				}
 				if (checkParams(args), "_" === method[0]) throw new Error("inaccessible private attribute", method);
 				try {
-					var contract = _callList[exist ? callIndex : _callList.length - 1].values;
+					var contract = _callMap[address];
 					if ("init" === method && contract.initLock) throw new Error("init is locked...");
 					let result = contract[method](...args),
 						rType = typeof result;
