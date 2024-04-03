@@ -9,13 +9,6 @@ function isKeyword(field) {
 	].includes(field)
 }
 
-function extractParameters(func) {
-	var func = func.toString(),
-		start = func.indexOf("(") + 1,
-		end = func.indexOf(")");
-	return func.slice(start, end).split(",").map(param => param.trim()).filter(param => "" !== param)
-}
-
 function checkContract(contract) {
 	let ABI = [];
 	var prototype = Object.getPrototypeOf(contract);
@@ -30,9 +23,9 @@ function checkContract(contract) {
 				var dsv = descriptors[funcName].value;
 				if (dsv && "constructor" != funcName && dsv.toString().includes("async")) throw new Error(
 					"disable async function");
-				"function" == typeof prototype[funcName] && (dsv = extractParameters(prototype[funcName]),
-					"constructor" == funcName || funcName.startsWith("_") || isKeyword(funcName) || ABI
-					.push({
+				"function" == typeof prototype[funcName] && (dsv = prototype[funcName], dsv = extractParameters(
+						dsv), "constructor" == funcName || funcName.startsWith("_") || isKeyword(
+					funcName) || ABI.push({
 						name: funcName,
 						params: dsv
 					}))
@@ -53,8 +46,9 @@ const KIPS = [{
 	]
 }, {
 	name: "K721",
-	methods: ["$name", "$symbol", "$baseUrl", "$balanceOf", "$ownerOf", "$tokenURI", "$getApproved",
-		"$isApprovedForAll", "mint", "transfer", "transferFrom", "approve", "setApprovalForAll"
+	methods: ["$name", "$symbol", "$baseUrl", "$totalSupply", "$balanceOf", "$ownerOf", "$tokenURI",
+		"$getApproved", "$isApprovedForAll", "mint", "transfer", "transferFrom", "approve",
+		"setApprovalForAll"
 	]
 }];
 

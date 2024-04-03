@@ -88,7 +88,7 @@ let _callList = [],
 						return random(timeStamp + mNumbers, min, max, !0)
 					};
 				let writableNames = ["memo", "address", "msgSender", "height", "txOrigin", "timeStamp", "txHash",
-					"randomInt", "randomFloat", "event", "deploy"
+					"Caller", "randomInt", "randomFloat", "event", "deploy", "HashA", "HashB"
 				];
 				writableNames.forEach(name => {
 					Object.defineProperty(Obj, name, {
